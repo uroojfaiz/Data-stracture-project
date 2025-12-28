@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>University Project Submission – DS Comparison</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</head>
+<body>
+
+    <!-- Navbar -->
+<header>
+<nav>
+<h1>University DS Project</h1>
+<div>
+<a href="#" onclick="showPage('home')">Home</a>
+<a href="#" onclick="showPage('without')">Without DS</a>
+<a href="#" onclick="showPage('with')">With DS</a>
+<a href="#" onclick="renderStudentReport()">Student Report</a>
+</div>
+
+
+</nav>
+</header>
+
+<section id="studentReport">
+  <h2 style="text-align:center;color:#38bdf8;">Student Submission Report</h2>
+  <table style="width:90%;margin:auto;border-collapse:collapse;">
+    <thead>
+      <tr>
+        <th style="padding:12px;border:1px solid #94a3b8;">Name</th>
+        <th style="padding:12px;border:1px solid #94a3b8;">ID</th>
+        <th style="padding:12px;border:1px solid #94a3b8;">Date</th>
+        <th style="padding:12px;border:1px solid #94a3b8;">Project</th>
+        <th style="padding:12px;border:1px solid #94a3b8;">Subject</th>
+        <th style="padding:12px;border:1px solid #94a3b8;">Submitted</th>
+      </tr>
+    </thead>
+    <tbody id="reportBody"></tbody>
+  </table>
+</section>
+
+
+
+
+<!-- Student Submissions Page -->
+<section id="submissions">
+<h2 style="text-align:center;color:#38bdf8;margin-bottom:20px;">📋 All Student Submissions</h2>
+
+<div style="text-align:center;margin-bottom:20px;">
+  <button class="btn" onclick="renderSubmissionCards()">View as Cards</button>
+  <button class="btn" onclick="renderSubmissionProgress()">View as Progress</button>
+</div>
+
+<!-- Cards Container -->
+<div id="submissionCards" class="cards"></div>
+
+<!-- Circular Progress Container -->
+<div id="submissionProgress" style="display:none; text-align:center; gap:30px; flex-wrap:wrap; display:flex; justify-content:center;"></div>
+</section>
+
+
+
+
+
+<!-- Search Modal -->
+<div class="overlay" id="searchOverlay">
+  <div class="modal">
+    <span class="close" onclick="closeSearch()">❌</span>
+    <h3 style="color:#38bdf8;margin-bottom:15px">Search Results</h3>
+    <div id="searchResults"></div>
+  </div>
+</div>
+
+<!-- Home Page -->
+<section id="home" class="active">
+  <div class="hero">
+    <div>
+      <h2>University Project<br><span style="color:#38bdf8">Submission & Analysis System</span></h2>
+      <p>Teacher can search by <b>Subject</b> or <b>Project</b> and instantly see which students submitted. Compare before and after using Data Structures.</p>
+      <button class="btn" onclick="showPage('without')">Without DS</button>
+      <button class="btn" onclick="showPage('with')">With DS</button>
+      <div style="margin-top:25px">
+        <select id="searchCategory">
+          <option value="">Select Search Category</option>
+          <option value="subject">Search by Subject</option>
+          <option value="project">Search by Project</option>
+        </select>
+        <input id="searchKey" placeholder="e.g. AI or Chatbot" />
+        <button class="btn" onclick="searchRecords()">Search</button>
+      </div>
+    </div>
+    <img src="https://images.unsplash.com/photo-1523580846011-d3a5bc25702b">
+  </div>
+  <div class="cards">
+    <div class="card"><img src="https://images.unsplash.com/photo-1516321497487-e288fb19713f"><h3>Compare Tasks</h3><p>See how submissions worked before and after using Data Structure.</p></div>
+    <div class="card"><img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085"><h3>Queue Advantage</h3><p>FIFO system ensures correct submission order.</p></div>
+    <div class="card"><img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644"><h3>Teacher UI</h3><p>Simple, interactive, modern interface for viewing submissions.</p></div>
+  </div>
+</section>
+
+<section id="withoutDS" class="form-section">
+  <div class="form-container">
+    <h2>Without Data Structure Submission</h2>
+    <p>Submit your project here. Fields must be filled to proceed.</p>
+    <button class="btn btn-open-form" data-target="withoutForm">Open Form</button>
+    
+    <form id="withoutForm">
+      <input type="text" id="w_name" placeholder="Student Name">
+      <input type="text" id="w_id" placeholder="Student ID">
+      
+      <select id="w_subject">
+        <option value="">Select Subject</option>
+        <option>AI</option>
+        <option>Computer Network</option>
+        <option>Software Engineering</option>
+        <option>Probability</option>
+        <option>Data Structure</option>
+        <option>Information Security</option>
+      </select>
+      
+      <select id="w_project">
+        <option value="">Select Project</option>
+        <option>AI Chatbot</option>
+        <option>Network Simulator</option>
+        <option>Software Tool</option>
+        <option>Probability Calculator</option>
+        <option>DS Assignment</option>
+        <option>Security Analysis</option>
+      </select>
+      
+      <input type="date" id="w_date">
+      <button type="button" onclick="submitWithout()">Submit</button>
+    </form>
+  </div>
+</section>
+
+<!-- with ds -->
+<section id="withDS" class="form-section">
+  <div class="form-container">
+    <h2>With Data Structure Submission</h2>
+    <p>Submit your project with structured data. Maximum 10 submissions per project.</p>
+    <button class="btn btn-open-form" data-target="withForm">Open Form</button>
+    
+    <form id="withForm">
+      <input type="text" id="d_name" placeholder="Student Name">
+      <input type="text" id="d_id" placeholder="Student ID">
+      
+      <select id="d_subject">
+        <option value="">Select Subject</option>
+        <option>AI</option>
+        <option>Computer Network</option>
+        <option>Software Engineering</option>
+        <option>Probability</option>
+        <option>Data Structure</option>
+        <option>Information Security</option>
+      </select>
+      
+      <select id="d_project">
+        <option value="">Select Project</option>
+        <option>AI Chatbot</option>
+        <option>Network Simulator</option>
+        <option>Software Tool</option>
+        <option>Probability Calculator</option>
+        <option>DS Assignment</option>
+        <option>Security Analysis</option>
+      </select>
+      
+      <input type="date" id="d_date">
+      <button type="button" onclick="enqueue()">Submit</button>
+    </form>
+  </div>
+</section>
+
+
+<!-- Progress Section -->
+
+
+<h2 class="ks">🔥 Most Demanding Projects</h2>
+
+<div class="top-projects">
+  <div class="project-card animate__animated animate__fadeInUp" style="animation-delay:0.2s;">
+    <h3>AI Chatbot</h3>
+    <p>12k people working on this</p>
+  </div>
+  <div class="project-card animate__animated animate__fadeInUp" style="animation-delay:0.4s;">
+    <h3>Network Simulator</h3>
+    <p>8k people working on this</p>
+  </div>
+  <div class="project-card animate__animated animate__fadeInUp" style="animation-delay:0.6s;">
+    <h3>Software Tool</h3>
+    <p>10k people working on this</p>
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<section id="home" class="active">
+  <!-- Existing hero and cards -->
+
+  
+    <div class="reference">
+      <div class="reference-card">
+        <img src="./OIP (4).jpeg">
+        <h4>Reference Book 1</h4>
+      </div>
+      <div class="reference-card">
+        <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e">
+        <h4>Reference Book 2</h4>
+      </div>
+      <div class="reference-card">
+        <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f">
+        <h4>Project Idea 1</h4>
+      </div>
+      <div class="reference-card">
+        <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216">
+        <h4>Project Idea 2</h4>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DS Comparison Content -->
+<div class="ds-comparison-wrapper">
+
+  <h2 class="ds-title">
+    Before & After Using Data Structures
+  </h2>
+
+  <p class="ds-subtitle">
+    This section explains how the system behavior changes when Data Structures
+    are applied compared to a simple, unstructured approach.
+  </p>
+
+  <div class="ds-cards">
+
+    <!-- Without Data Structure -->
+    <div class="ds-card without">
+      <img src="https://images.unsplash.com/photo-1581090700227-1e37b190418e" alt="">
+      <h3>Without Data Structure</h3>
+      <p>
+        Data is stored randomly without any structure.
+        Searching is slow, records are duplicated,
+        and teachers cannot easily track submissions.
+      </p>
+      <ul>
+        <li>❌ Slow search</li>
+        <li>❌ No limit control</li>
+        <li>❌ Data duplication</li>
+      </ul>
+    </div>
+
+    <!-- With Data Structure -->
+    <div class="ds-card with">
+      <img src="https://images.unsplash.com/photo-1518770660439-4636190af475" alt="">
+      <h3>With Data Structure (Queue)</h3>
+      <p>
+        A Queue (FIFO) is used to manage submissions.
+        Data becomes organized, searchable,
+        and submission limits are enforced.
+      </p>
+      <ul>
+        <li>✅ Fast search</li>
+        <li>✅ Max 10 submissions per project</li>
+        <li>✅ Organized records</li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-overlay"></div>
+  <div class="footer-content">
+    <h2>University Project Submission</h2>
+    <p>How Data Structures improve project submissions and tracking.</p>
+
+    <!-- Circular Progress Bars -->
+    <div class="footer-circles">
+      <div class="circle" id="progress1"><span class="progress-value">0%</span><p>AI Projects</p></div>
+      <div class="circle" id="progress2"><span class="progress-value">0%</span><p>Network Projects</p></div>
+      <div class="circle" id="progress3"><span class="progress-value">0%</span><p>DS Projects</p></div>
+    </div>
+
+    <!-- Reference Cards -->
+    <div class="footer-references">
+      <div class="ref-card">
+        <img src="./OIP (4).jpeg" alt="Book 1">
+        <p>Reference Book 1</p>
+      </div>
+      <div class="ref-card">
+        <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e" alt="Book 2">
+        <p>Reference Book 2</p>
+      </div>
+      <div class="ref-card">
+        <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216" alt="Project Idea">
+        <p>Project Idea</p>
+      </div>
+    </div>
+
+    <!-- Footer Links -->
+    <div class="footer-links">
+      <a href="#" onclick="showPage('home')">Home</a>
+      <a href="#" onclick="showPage('without')">Without DS</a>
+      <a href="#" onclick="showPage('with')">With DS</a>
+      <a href="#" onclick="showStudentData('cards')">Student Data</a>
+    </div>
+
+    <p class="footer-copy">© 2025 University Data Structure Project | A+ Level | All Rights Reserved</p>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
