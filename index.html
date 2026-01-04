@@ -17,8 +17,8 @@
 <h1>University DS Project</h1>
 <div>
 <a href="#" onclick="showPage('home')">Home</a>
-<a href="#" onclick="showPage('without')">Without DS</a>
-<a href="#" onclick="showPage('with')">With DS</a>
+<a href="#" onclick="showPage('withoutDS')">Without DS</a>
+<a href="#" onclick="showPage('withDS')">With DS</a>
 <a href="#" onclick="renderStudentReport()">Student Report</a>
 </div>
 
@@ -81,8 +81,8 @@
     <div>
       <h2>University Project<br><span style="color:#38bdf8">Submission & Analysis System</span></h2>
       <p>Teacher can search by <b>Subject</b> or <b>Project</b> and instantly see which students submitted. Compare before and after using Data Structures.</p>
-      <button class="btn" onclick="showPage('without')">Without DS</button>
-      <button class="btn" onclick="showPage('with')">With DS</button>
+      <button class="btn" onclick="showPage('withoutDS')">Without DS</button>
+      <button class="btn" onclick="showPage('withDS')">With DS</button>
       <div style="margin-top:25px">
         <select id="searchCategory">
           <option value="">Select Search Category</option>
@@ -102,78 +102,62 @@
   </div>
 </section>
 
+<!-- WITHOUT DS FORM -->
 <section id="withoutDS" class="form-section">
   <div class="form-container">
-    <h2>Without Data Structure Submission</h2>
-    <p>Submit your project here. Fields must be filled to proceed.</p>
-    <button class="btn btn-open-form" data-target="withoutForm">Open Form</button>
-    
+    <h2>Without Data Structure</h2>
+    <p>Unstructured submission</p>
+    <button class="btn-open-form" data-target="withoutForm">Open Form</button>
+
     <form id="withoutForm">
       <input type="text" id="w_name" placeholder="Student Name">
       <input type="text" id="w_id" placeholder="Student ID">
-      
       <select id="w_subject">
         <option value="">Select Subject</option>
         <option>AI</option>
-        <option>Computer Network</option>
-        <option>Software Engineering</option>
-        <option>Probability</option>
         <option>Data Structure</option>
-        <option>Information Security</option>
+        <option>Software Engineering</option>
       </select>
-      
       <select id="w_project">
         <option value="">Select Project</option>
         <option>AI Chatbot</option>
-        <option>Network Simulator</option>
-        <option>Software Tool</option>
-        <option>Probability Calculator</option>
         <option>DS Assignment</option>
-        <option>Security Analysis</option>
+        <option>Software Tool</option>
       </select>
-      
       <input type="date" id="w_date">
-      <button type="button" onclick="submitWithout()">Submit</button>
+      <button type="button" onclick="submitWithout()" class="form-btn">Submit</button>
     </form>
   </div>
 </section>
 
-<!-- with ds -->
+<!-- WITH DS FORM -->
 <section id="withDS" class="form-section">
   <div class="form-container">
-    <h2>With Data Structure Submission</h2>
-    <p>Submit your project with structured data. Maximum 10 submissions per project.</p>
-    <button class="btn btn-open-form" data-target="withForm">Open Form</button>
-    
+    <h2>With Data Structure (Queue)</h2>
+    <p>FIFO + Validation (Max 10 per project)</p>
+    <button class="btn-open-form" data-target="withForm">Open Form</button>
+
     <form id="withForm">
       <input type="text" id="d_name" placeholder="Student Name">
       <input type="text" id="d_id" placeholder="Student ID">
-      
       <select id="d_subject">
         <option value="">Select Subject</option>
         <option>AI</option>
-        <option>Computer Network</option>
-        <option>Software Engineering</option>
-        <option>Probability</option>
         <option>Data Structure</option>
-        <option>Information Security</option>
+        <option>Software Engineering</option>
       </select>
-      
       <select id="d_project">
         <option value="">Select Project</option>
         <option>AI Chatbot</option>
-        <option>Network Simulator</option>
-        <option>Software Tool</option>
-        <option>Probability Calculator</option>
         <option>DS Assignment</option>
-        <option>Security Analysis</option>
+        <option>Software Tool</option>
       </select>
-      
       <input type="date" id="d_date">
-      <button type="button" onclick="enqueue()">Submit</button>
+      <button type="button" onclick="enqueue()" class="form-btn">Submit</button>
     </form>
   </div>
 </section>
+
 
 
 <!-- Progress Section -->

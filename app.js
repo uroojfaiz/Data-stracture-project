@@ -1,151 +1,153 @@
-// --- Page Navigation ---
-function showPage(id){
-  document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+// ================= PAGE NAVIGATION =================
+function showPage(id) {
+  // sab sections hide
+  document.querySelectorAll('section').forEach(sec => sec.style.display = 'none');
+
+  // required section show
+  const page = document.getElementById(id);
+  if (page) page.style.display = 'block';
 }
 
-// --- Toggle Forms ---
-function toggleForm(id){
-  let f=document.getElementById(id);
-  f.style.display = (f.style.display === 'block') ? 'none' : 'block';
-}
+// ================= ON PAGE LOAD =================
+document.addEventListener('DOMContentLoaded', () => {
+  // default home
+  showPage('home');
 
-// --- Search Overlay ---
-function closeSearch(){
+  // Open Form buttons
+  document.querySelectorAll('.btn-open-form').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const formId = btn.getAttribute('data-target');
+      const form = document.getElementById(formId);
+      if (!form) return;
+
+      // Toggle form display as flex
+      form.style.display = (form.style.display === 'flex') ? 'none' : 'flex';
+    });
+  });
+});
+
+// ================= CLOSE SEARCH =================
+function closeSearch() {
   document.getElementById('searchOverlay').style.display = 'none';
 }
 
-// --- Global Arrays ---
-window.withoutSubmissions = []; // For submissions without DS
-let queue = []; // For submissions with DS
-let projectCount = {}; // Counter per project in DS
+// ================= SEARCH =================
+function searchRecords() {
+  const category = document.getElementById('searchCategory').value;
+  const key = document.getElementById('searchKey').value.toLowerCase();
 
-// --- Submit Without DS ---
-function submitWithout(){
-  let name=w_name.value, id=w_id.value, subject=w_subject.value, project=w_project.value, date=w_date.value;
-
-  if(!name || !id || !subject || !project || !date){
-    Swal.fire('Error','Please fill all fields','error');
+  if (!category || !key) {
+    Swal.fire('Error', 'Select category and enter keyword', 'error');
     return;
   }
 
-  window.withoutSubmissions.push({name,id,subject,project,date});
-  Swal.fire('Submitted','Project saved without DS','success');
-
-  // Clear form
-  w_name.value=w_id.value=w_subject.value=w_project.value=w_date.value='';
-
-  toggleForm('withoutForm');
-}
-
-// --- Submit With DS ---
-function enqueue(){
-  let name=d_name.value, id=d_id.value, subject=d_subject.value, project=d_project.value, date=d_date.value;
-
-  projectCount[project] = projectCount[project] || 0;
-
-  if(!name || !id || !subject || !project || !date){
-    Swal.fire('Error','Please fill all fields','error');
-    return;
-  }
-
-  if(projectCount[project] >= 10){
-    Swal.fire('Limit Reached','Only 10 submissions allowed per project','error');
-    return;
-  }
-
-  queue.push({name,id,subject,project,date});
-  projectCount[project]++;
-  Swal.fire('Submitted','Project saved with DS','success');
-
-  // Clear form
-  d_name.value=d_id.value=d_subject.value=d_project.value=d_date.value='';
-
-  toggleForm('withForm');
-  updateProgress();
-}
-
-// --- Update Circular Progress ---
-function updateProgress(){
-  let total = queue.length;
-  let percent = Math.round((total/60)*100); // Assuming 60 submissions max
-  const circle = document.getElementById('percentCircle');
-  if(circle){
-    circle.style.setProperty('--p', percent*3.6+'deg');
-    circle.innerText = percent + '%';
-  }
-}
-
-// --- Search Submissions ---
-function searchRecords(){
-  let cat=document.getElementById('searchCategory').value;
-  let key=document.getElementById('searchKey').value.toLowerCase();
-
-  const allData = [...window.withoutSubmissions, ...queue];
-  let res = allData.filter(item =>
-    cat === 'subject' ? item.subject.toLowerCase().includes(key) : item.project.toLowerCase().includes(key)
+  const allData = [...withoutSubmissions, ...queue];
+  const results = allData.filter(item =>
+    item[category].toLowerCase().includes(key)
   );
 
-  let html=`<b>Total Records:</b> ${res.length}<br><br>`;
-  res.forEach(r=>{
+  let html = `<b>Total Records:</b> ${results.length}<br><br>`;
+  results.forEach(r => {
     html += `👨‍🎓 ${r.name} | ${r.id} | ${r.subject} | ${r.project} | ${r.date}<br>`;
   });
-  if(!res.length) html += '0 Record Found';
 
+  if (results.length === 0) html += 'No record found';
   document.getElementById('searchResults').innerHTML = html;
   document.getElementById('searchOverlay').style.display = 'flex';
 }
 
-// --- Render Student Report Table ---
-function renderStudentReport(){
-  showPage('studentReport'); // Show report page
+// ================= STUDENT REPORT =================
+function renderStudentReport() {
+  showPage('studentReport');
   const tbody = document.getElementById('reportBody');
   tbody.innerHTML = '';
 
-  const allSubmissions = [...window.withoutSubmissions, ...queue];
-
-  if(allSubmissions.length === 0){
-    tbody.innerHTML = `<tr><td colspan="6" style="color:#f87171;text-align:center;">No submissions yet.</td></tr>`;
+  const allData = [...withoutSubmissions, ...queue];
+  if (allData.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:red;">No submissions yet</td></tr>`;
     return;
   }
 
-  allSubmissions.forEach(s=>{
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td style="padding:12px; border:1px solid #94a3b8;">${s.name}</td>
-      <td style="padding:12px; border:1px solid #94a3b8;">${s.id}</td>
-      <td style="padding:12px; border:1px solid #94a3b8;">${s.date}</td>
-      <td style="padding:12px; border:1px solid #94a3b8;">${s.project}</td>
-      <td style="padding:12px; border:1px solid #94a3b8;">${s.subject}</td>
-      <td style="padding:12px; border:1px solid #94a3b8;">Yes</td>
+  allData.forEach(s => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${s.name}</td>
+        <td>${s.id}</td>
+        <td>${s.date}</td>
+        <td>${s.project}</td>
+        <td>${s.subject}</td>
+        <td>Yes</td>
+      </tr>
     `;
-    tbody.appendChild(tr);
   });
 }
 
-// --- Show Submission Data as Cards (Optional) ---
-function renderSubmissionCards(){
-  const container = document.getElementById('submissionCards');
-  container.innerHTML = '';
-  container.style.display='grid';
-  container.style.gridTemplateColumns = 'repeat(auto-fit,minmax(250px,1fr))';
-  container.style.gap='20px';
+// ================= ARRAYS =================
+window.withoutSubmissions = [];
+let queue = [];
+let projectCount = {};
 
-  const allData = [...window.withoutSubmissions, ...queue];
-  if(allData.length === 0){
-    container.innerHTML = '<p style="color:#f87171;text-align:center;">No submissions yet.</p>';
+// ================= SUBMIT WITHOUT DS =================
+function submitWithout() {
+  const name = document.getElementById('w_name').value.trim();
+  const id = document.getElementById('w_id').value.trim();
+  const subject = document.getElementById('w_subject').value;
+  const project = document.getElementById('w_project').value;
+  const date = document.getElementById('w_date').value;
+
+  if (!name || !id || !subject || !project || !date) {
+    Swal.fire('Error', 'Please fill all fields', 'error');
     return;
   }
 
-  allData.forEach(s=>{
-    const card = document.createElement('div');
-    card.className='card animate__animated animate__fadeInUp';
-    card.innerHTML = `
-      <h3>${s.name} (${s.id})</h3>
-      <p>Subject: ${s.subject}</p>
-      <p>Project: ${s.project}</p>
-      <p>Date: ${s.date}</p>
-    `;
-    container.appendChild(card);
-  });
+  // push directly, duplicates allowed
+  withoutSubmissions.push({ name, id, subject, project, date });
+  Swal.fire('Success', 'Project saved WITHOUT DS (duplicates allowed)', 'success');
+
+  // Clear and close form
+  document.getElementById('withoutForm').reset();
+  document.getElementById('withoutForm').style.display = 'none';
+}
+
+// ================= SUBMIT WITH DS =================
+function enqueue() {
+  const name = document.getElementById('d_name').value.trim();
+  const id = document.getElementById('d_id').value.trim();
+  const subject = document.getElementById('d_subject').value;
+  const project = document.getElementById('d_project').value;
+  const date = document.getElementById('d_date').value;
+
+  if (!name || !id || !subject || !project || !date) {
+    Swal.fire('Error', 'Please fill all fields', 'error');
+    return;
+  }
+
+  projectCount[project] = projectCount[project] || 0;
+
+  if (projectCount[project] >= 10) {
+    Swal.fire('Error', 'Maximum 10 submissions allowed per project', 'error');
+    return;
+  }
+
+  // Check for duplicates (same Name + ID + Subject + Project)
+  const duplicate = queue.find(s =>
+    s.name.toLowerCase() === name.toLowerCase() &&
+    s.id === id &&
+    s.subject === subject &&
+    s.project === project
+  );
+
+  if (duplicate) {
+    Swal.fire('Error', 'Duplicate submission detected! Cannot submit again.', 'error');
+    return;
+  }
+
+  // Push to queue
+  queue.push({ name, id, subject, project, date });
+  projectCount[project]++;
+  Swal.fire('Success', 'Project saved WITH DS (duplicates blocked)', 'success');
+
+  // Clear and close form
+  document.getElementById('withForm').reset();
+  document.getElementById('withForm').style.display = 'none';
 }
